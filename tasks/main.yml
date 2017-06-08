@@ -1,0 +1,34 @@
+---
+- name: download src...
+  become: yes
+  become_user: root
+  get_url:
+    url: '{{cntlm_tgz_url}}'
+    dest: /tmp/{{cntlm_tgz}}
+    mode: 0644
+
+- name: unarchive
+  become: yes
+  become_user: root
+  unarchive:
+    src: /tmp/{{cntlm_tgz}}
+    dest: '{{cntlm_src_parent_dir}}'
+    creates: '{{cntlm_src_dir}}'
+
+- name: build...
+  become: yes
+  become_user: root
+  with_items:
+    - ./configure
+    - make
+    - make install
+  command: '{{item}}'
+  args:
+    chdir: '{{cntlm_src_dir}}'
+
+- name: cleanup...
+  become: yes
+  become_user: root
+  file:
+    path: '{{cntlm_src_dir}}'
+    state: absent

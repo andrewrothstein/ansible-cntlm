@@ -1,0 +1,6 @@
+---
+# defaults file for cntlm
+cntlm_ver: '0.92.3'
+cntlm_mirror: https://downloads.sourceforge.net/project/cntlm/cntlm
+
+cntlm_src_parent_dir: /usr/local
