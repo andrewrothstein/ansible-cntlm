@@ -24,6 +24,7 @@
   get_url:
     url: '{{cntlm_tgz_url}}'
     dest: /tmp/{{cntlm_tgz}}
+    checksum: '{{cntlm_checksum}}'
     mode: 0644
 
 - name: unarchive
