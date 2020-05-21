@@ -1,8 +1,8 @@
 ---
 # vars file for cntlm
-cntlm_name: cntlm-{{cntlm_ver}}
-cntlm_tgz: '{{cntlm_name}}.tar.gz'
-cntlm_tgz_url: '{{cntlm_mirror}}/cntlm%20{{cntlm_ver}}/{{cntlm_tgz}}'
-cntlm_checksum: '{{cntlm_checksums[cntlm_ver]}}'
+cntlm_name: cntlm-{{ cntlm_ver }}
+cntlm_tgz: '{{ cntlm_name }}.tar.gz'
+cntlm_tgz_url: '{{ cntlm_mirror }}/cntlm%20{{ cntlm_ver }}/{{ cntlm_tgz }}'
+cntlm_checksum: '{{ cntlm_checksums[cntlm_ver] }}'
 
-cntlm_src_dir: '{{cntlm_src_parent_dir}}/{{cntlm_name}}'
+cntlm_src_dir: '{{ cntlm_src_parent_dir }}/{{ cntlm_name }}'
