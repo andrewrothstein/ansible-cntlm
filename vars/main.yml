@@ -2,6 +2,7 @@
 # vars file for cntlm
 cntlm_name: cntlm-{{ cntlm_ver }}
 cntlm_tgz: '{{ cntlm_name }}.tar.gz'
+cntlm_tmp_tgz: '{{ cntlm_tmp_dir | default("/tmp") }}/{{ cntlm_tgz }}'
 cntlm_tgz_url: '{{ cntlm_mirror }}/cntlm%20{{ cntlm_ver }}/{{ cntlm_tgz }}'
 cntlm_checksum: '{{ cntlm_checksums[cntlm_ver] }}'
 

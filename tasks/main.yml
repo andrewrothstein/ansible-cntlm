@@ -1,4 +1,8 @@
 ---
+- include_role:
+    name: andrewrothstein.unarchive-deps
+- include_role:
+    name: andrewrothstein.gcc-toolbox
 - name: resolve platform specific vars
   include_vars: '{{ item }}'
   with_first_found:
@@ -11,35 +15,36 @@
         - '{{ role_path }}/vars'
 
 - name: install dep pkgs...
-  become: yes
+  become: true
   become_user: root
   with_items: '{{ cntlm_dep_pkgs | default([]) }}'
   package:
     name: '{{ item }}'
     state: present
 
-- name: download src...
-  become: yes
+- name: downloading {{ cntlm_tgz_url }} to {{ cntlm_tmp_tgz }}
+  become: true
   become_user: root
   get_url:
     url: '{{ cntlm_tgz_url }}'
-    dest: /tmp/{{ cntlm_tgz }}
+    dest: '{{ cntlm_tmp_tgz }}'
     checksum: '{{ cntlm_checksum }}'
     mode: 0644
 
-- name: unarchive
-  become: yes
+- name: unarchiving {{ cntlm_tmp_tgz }} to {{ cntlm_src_parent_dir }}
+  become: true
   become_user: root
   unarchive:
-    src: /tmp/{{ cntlm_tgz }}
+    remote_src: true
+    src: '{{ cntlm_tmp_tgz }}'
     dest: '{{ cntlm_src_parent_dir }}'
     creates: '{{ cntlm_src_dir }}'
 
 - name: build...
-  become: yes
+  become: true
   become_user: root
   with_items:
-    - ./configure
+    - '{{ cntlm_src_dir }}/configure'
     - make
     - make install
   command: '{{ item }}'
@@ -47,7 +52,7 @@
     chdir: '{{ cntlm_src_dir }}'
 
 - name: cleanup...
-  become: yes
+  become: true
   become_user: root
   file:
     path: '{{ cntlm_src_dir }}'
