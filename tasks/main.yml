@@ -1,10 +1,12 @@
 ---
-- include_role:
-    name: andrewrothstein.unarchive-deps
-- include_role:
-    name: andrewrothstein.gcc-toolbox
-- name: resolve platform specific vars
-  include_vars: '{{ item }}'
+- name: Installing andrewrothstein.unarchivedeps
+  ansible.builtin.include_role:
+    name: andrewrothstein.unarchivedeps
+- name: Installing andrewrothstein.gcc_toolbox
+  ansible.builtin.include_role:
+    name: andrewrothstein.gcc_toolbox
+- name: Resolve platform specific vars
+  ansible.builtin.include_vars: '{{ item }}'
   with_first_found:
     - files:
         - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
@@ -14,46 +16,46 @@
       paths:
         - '{{ role_path }}/vars'
 
-- name: install dep pkgs...
+- name: Installin dep OS pkgs...
   become: true
   become_user: root
-  with_items: '{{ cntlm_dep_pkgs | default([]) }}'
-  package:
-    name: '{{ item }}'
+  ansible.builtin.package:
+    name: '{{ cntlm_dep_pkgs | default([]) }}'
     state: present
 
-- name: downloading {{ cntlm_tgz_url }} to {{ cntlm_tmp_tgz }}
+- name: Downloading {{ cntlm_tgz_url }} to {{ cntlm_tmp_tgz }}
   become: true
   become_user: root
-  get_url:
+  ansible.builtin.get_url:
     url: '{{ cntlm_tgz_url }}'
     dest: '{{ cntlm_tmp_tgz }}'
     checksum: '{{ cntlm_checksum }}'
-    mode: 0644
+    mode: '644'
 
-- name: unarchiving {{ cntlm_tmp_tgz }} to {{ cntlm_src_parent_dir }}
+- name: Unarchiving {{ cntlm_tmp_tgz }} to {{ cntlm_src_parent_dir }}
   become: true
   become_user: root
-  unarchive:
+  ansible.builtin.unarchive:
     remote_src: true
     src: '{{ cntlm_tmp_tgz }}'
     dest: '{{ cntlm_src_parent_dir }}'
     creates: '{{ cntlm_src_dir }}'
 
-- name: build...
+- name: Configure, Make, Make Install...
   become: true
   become_user: root
   with_items:
     - '{{ cntlm_src_dir }}/configure'
     - make
     - make install
-  command: '{{ item }}'
+  ansible.builtin.command: '{{ item }}'
+  changed_when: false
   args:
     chdir: '{{ cntlm_src_dir }}'
 
-- name: cleanup...
+- name: Cleanup...
   become: true
   become_user: root
-  file:
+  ansible.builtin.file:
     path: '{{ cntlm_src_dir }}'
     state: absent
